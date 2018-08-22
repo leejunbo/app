@@ -1,0 +1,210 @@
+{% extends "common/index.html" %}
+{% block styles %}
+    <link href="../../static/css/domain.css" rel="stylesheet">
+    <link href="../../static/css/modal.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <h5 class="m-2">域名信息添加</h5>
+    <div class="row col-lg-12 col-sm-12" style="padding-left: 40px">
+    <div class="col-lg-5"></div> 
+    <div  id="addButton" class="col-sm-12 col-lg-2">
+    <button id="add_Info" class="btn btn-primary btn-block btn-lg" style="font-size:0.8rem;"> 添&nbsp;&nbsp;加</button>
+    </div>
+    <div class=""></div>
+    </div>
+    <hr/>
+        <h5 class="m-2"> 信息管理</h5>
+        <div class="clearfix">
+            <table id="jobs" class="display" width="100%" cellspacing="0";>
+                <thead>
+                <tr>
+                    <th width="100">序号</th>
+                    <th>域名</th>
+                    <th>IP</th>
+                    <th>端口</th>
+                    <th>所属集群ID</th>
+                    <th width="150"><p style="width:13em;margin-bottom:0">操作</p></th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        {% include 'domain/update.html' %}
+        {% include 'domain/delete.html' %}
+        {% include 'domain/add.html' %}
+        {% include 'domain/edit_text.html' %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="../../static/js/jquery.confirm.js"></script>
+    <script src="../../static/js/doadd.js"></script>
+    <script src="../../static/js/doupdate.js"></script>
+    <script>
+       $("#addButton").on('click', '#add_Info', function () {
+                $('#add').modal('show');
+            });
+    </script>
+    <script>
+       function addInfo(obj){
+            var data = {};
+            data['domain'] = $('#domain_0').val();
+            data['ip'] = $('#ip_0').val();
+            data['port'] = $('#port_0').val();
+            data['cls_id'] = $('#clsId_0').val();
+            var reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+            if(data.domain!=""&&data.ip!=""&&data.port!=""&&reg.test(data.ip)){
+            $.ajax({
+                type: 'POST',
+                url: "/domain/add",
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=UTF-8',
+                dataType: 'json', // 注意：这里是指希望服务端返回json格式的数据
+                success: function (n) {
+                    window.location.href =  '{{ url_for('index') }}'
+                }// 这里的data就是json格式的数据
+              });
+            }else{
+
+             }
+        }
+
+    </script>
+    <script>
+        function update() {
+            var data = {};
+            data['id'] = $('#id').val();
+            data['domain'] = $('#domain').val();
+            data['ip'] = $('#ip').val();
+            data['port'] = $('#port').val();
+            var reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+            if(data.domain!=""&&data.ip!=""&&data.port!=""&&reg.test(data.ip)){
+            $.ajax({
+                type: 'POST',
+                url: "/domain/save",
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=UTF-8',
+                dataType: 'json', // 注意：这里是指希望服务端返回json格式的数据
+                success: function (n) {
+                    window.location.href = '{{ url_for('index') }}'
+                },// 这里的data就是json格式的数据
+            });}
+       }
+
+
+        function deleteInfo(obj){
+            var data = {};
+            data['del_id'] = $('#del_id').val();
+            data['cls_id'] = $('#cls_id').val();
+            $.ajax({
+                type: 'POST',
+                url: "/domain/delete",
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=UTF-8',
+                dataType: 'json', // 注意：这里是指希望服务端返回json格式的数据
+                success: function (data) {
+                    window.location.href = '{{ url_for('index') }}'
+                }// 这里的data就是json格式的数据
+            });
+        }
+        function confInfo(obj){
+            var data = {};
+            data['domain'] = $('#domain').val();
+            data['nfInfo'] = $('#confFile').val();
+            data['cls_id'] = $('#cls_id').val();
+            $.ajax({
+            type: 'post',
+            url: '/domain/config_newfile',
+            data: JSON.stringify(data),
+            contentType: 'application/json; charset=UTF-8',
+            dataType: 'json',
+            success: function (f) {
+                window.location.href = '{{ url_for('index') }}'
+            }
+            })
+        }
+    </script>
+    <script type="text/javascript">
+        var job_col = [
+            {data: null},
+            {data: "domain"},
+            {data: "ip"},
+            {data: "port"},
+            {data: "cls_id"},
+            {data: null},
+        ]
+        $(document).ready(function () {
+            var table = $('#jobs').DataTable({
+                "ajax": "/domain/d_sql_data",
+                "columns": job_col,
+                "scrollX": true,
+                "lengthMenu": [[50, 100, -1], [50, 100, "All"]],
+                "columnDefs": [
+                 {
+                     "targets":1,
+                     "render":function(data,type,row){return '<a href="http://'+data+'" target="_blank" style="">'+row.domain+'</a>';}
+                 },
+                 {
+                     "targets": -1,
+                     "defaultContent":"<font style=\"float:left;padding-left: 2px;\"><button id=\"editInfo\" class=\"btn-edit btn-primary-edit btn-sm-handle\">修改</button ></font>"
+                     +"<font style=\"float:left;padding-left: 2px;\"><button id=\"deleteInfo\" class=\"btn-del btn-primary-del btn-sm-handle\">删除</button></font>"
+                     +"<font style=\"float:left;padding-left: 2px;\"><button id=\"moreInfo\" class=\"btn-more btn-primary-more btn-sm-handle\">配置详情</button></font>"
+                 },
+              
+                {
+                    "searchable":false,
+                    "orderable":false,
+                    "targets":0,
+                },
+                 ],
+            });
+            table.on('order.dt search.dt',
+            function(){
+                table.column(0,{
+                     search: 'applied',
+                     order: 'applied'
+            }).nodes().each(function(cell,i){
+                cell.innerHTML = i + 1;
+            });
+            }).draw();
+            $('#jobs tbody').on('click', '#editInfo', function () {
+                var data = table.row($(this).parents().parents('tr')).data();
+                $('#id').val(data.id);
+                $('#domain').val(data.domain);
+                $('#ip').val(data.ip);
+                $('#port').val(data.port);
+                $('#cls_id').val(data.cls_id);
+                $('#update').modal('show');
+            });
+
+
+            $('#jobs tbody').on('click', '#deleteInfo', function () {
+                var data = table.row($(this).parents().parents('tr')).data();
+                $('#del_id').val(data.id);
+                $('#cls_id').val(data.cls_id);
+                $('#delete').modal('show');
+            });
+
+
+            $('#jobs tbody').on('click', '#moreInfo', function () {
+            var data = table.row($(this).parents().parents('tr')).data();
+            $('#domain').val(data.domain)
+            $('#cls_id').val(data.cls_id)
+            console.log("有木有！！！")
+            $.ajax({
+            type: 'post',
+            url: '/domain/config_file_info',
+            data: JSON.stringify(data),
+            contentType: 'application/json; charset=UTF-8',
+            dataType: 'json',
+            success: function(f){
+                console.log("有木有success！！！")
+                $('#confFile').val(f);
+                $('#editConfInfo').modal('show')
+            }
+            })
+            })
+        });
+        $('#jobs').removeClass('display').addClass('table table-striped table-bordered table-hover');
+    </script>
+
+{% endblock %}

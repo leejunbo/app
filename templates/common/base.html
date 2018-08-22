@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html {% block html_attribs %} lang="en" {% endblock %}>
+{% block html %}
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="format-detection" content="telephone=no" />
+        {% block metas %}{% endblock %}
+        <link href="/static/bootstrap-4.1.1-dist/css/bootstrap.css" rel="stylesheet">
+        <link href="/static/css/style.css" rel="stylesheet">
+{#        <link href="../static/css/base.css" rel="stylesheet">#}
+
+        <!-- DataTables CSS -->
+        <link href="/static/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css" rel="stylesheet">
+        <link href="/static/DataTables/Responsive-2.2.1/css/responsive.dataTables.min.css"
+              rel="stylesheet">
+        <link href="/static/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css"
+              rel="stylesheet">
+        {% block styles %}{% endblock %}
+    </head>
+    <body {% block body_attribs %}{% endblock %}>
+    {% block navbar %}
+    {% endblock %}
+    {% block body %}{% endblock %}
+    <script src="../../static/js/jquery-3.3.1.js"></script>
+     <script src="../../static/bootstrap-4.1.1-dist/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../static/js/popper.min.js"></script>
+    <script src="../../static/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+    <!-- DataTables JavaScript -->
+    <script src="../../static/DataTables/DataTables-1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="../../static/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+   <!-- <script src="../static/DataTables/extensions/Responsive/js/dataTables.responsive.js"></script> -->
+    {% block scripts %}{% endblock %}
+    </body>
+{% endblock %}
+</html>

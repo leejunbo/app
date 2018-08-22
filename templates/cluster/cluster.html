@@ -1,0 +1,90 @@
+{% extends "common/index.html" %}
+{% block content %}
+    <h5 class="m-2">集群信息添加</h5>
+    <div class="row col-lg-12 col-sm-12" style="padding-left: 40px">
+        <div class="col-lg-5"></div>
+        <div id="c_add_button" class="col-sm-12 col-lg-2">
+            <button id="c_add_Info" class="btn btn-primary btn-block btn-lg" style="font-size:0.8rem;"> 添&nbsp;&nbsp;加
+            </button>
+        </div>
+    </div>
+    <hr/>
+    <h5 class="m-2">集群管理</h5>
+    <div>
+        <table id="jobs" class="display" width="100%" cellspacing="0">
+            <thead>
+            <tr>
+                <th>集群ID</th>
+                <th>集群名称</th>
+                <th>集群路径</th>
+                <th>集群IP</th>
+                <th><p style="width:6em;margin-bottom:0">操作</p></th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    {% include "cluster/c_add.html" %}
+    {% include "cluster/c_delete.html" %}
+    {% include "cluster/c_edit.html" %}
+{% endblock %}
+{% block styles %}
+    <link href="../../static/css/cluster.css" rel="stylesheet">
+{% endblock %}
+{% block scripts %}
+    <script src="../../static/js/cluster/cluster.js"></script>
+    <script>
+        function c_addInfo() {
+            var data = {};
+            data['clsName'] = $('#a_cls_name').val();
+            data['clsPath'] = $('#a_cls_path').val();
+            data['clsIp'] = $('#a_cls_ip').val();
+            $.ajax({
+                type: 'POST',
+                url: "/cluster/c_add",
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=UTF-8',
+                dataType: 'json',
+                success: function (data) {
+                    window.location.href = "{{ url_for('job_index',item='cluster') }}"
+                }
+            });
+        }
+
+        function c_edit() {
+            var data = {};
+            data['clsId'] = $('#e_cls_id').val();
+            data['clsName'] = $('#e_cls_name').val();
+            data['clsPath'] = $('#e_cls_path').val();
+            data['clsIp'] = $('#e_cls_ip').val();
+            $.ajax({
+                type: 'POST',
+                url: '/cluster/c_edit',
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=UTF-8',
+                dataType: 'json',
+                success: function (data) {
+                    window.location.href = "{{ url_for('job_index', item='cluster') }}"
+                }
+            })
+        }
+
+        function c_delete() {
+            var data = {};
+            data['clsId'] = $('#d_cls_id').val();
+            data['clsName'] = $('#d_cls_name').val();
+            data['clsPath'] = $('#d_cls_path').val();
+            data['clsIp'] = $('#d_cls_ip').val();
+            $.ajax({
+                type: 'POST',
+                url: '/cluster/c_delete',
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=UTF-8',
+                dataType: 'json',
+                success: function (data) {
+                    window.location.href = "{{ url_for('job_index', item='cluster') }}"
+                }
+            })
+        }
+    </script>
+
+{% endblock %}

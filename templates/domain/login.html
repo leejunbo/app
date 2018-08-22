@@ -1,0 +1,47 @@
+{% extends "common/base.html" %}
+{% block title %}管理员登录{% endblock %}
+{% block body %}
+    {% include "domain/navbar2.html" %}
+    {% block styles %}
+    <link href="../../static/css/base.css" rel="stylesheet">
+    <link href="../../static/css/sigin.css" rel="stylesheet">
+    {% endblock %}
+    <header class="header">
+        <section class="topWrap clearfix">
+            <section class="mainWrap">
+                <span class="logo">
+                <a href="http://www.pku.edu.cn/" title="北京大学"><img
+                        src="../../static/img/pkulogo_red.png"></a>
+                <a class="xkb_logo" href="#"
+                   title="网站证书管理系统">网站证书管理系统</a>
+                </span>
+            </section>
+        </section>
+    </header>
+    <br>
+    <div class="container">
+        <form class="form-signin" method="post" action={{ url_for("login") }}>
+            <h2 class="form-signin-heading" style="color: #8f363c;font-size: 20px">管理员登录</h2>
+            <label for="username" class="sr-only"></label>
+            <input id="username" name="username" class="form-control" placeholder="账号"  required autofocus>
+            <label for="password" class="sr-only"></label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="密码" required>
+            <div class="checkbox">
+                <label>
+                    <input id="remember_text" type="checkbox" value="remember-me">记住登录信息
+                </label>
+               <label>
+                    <a href="" style="margin-left: 150px;font-size: 15px;color: #9c0000;"></a>
+               </label>
+            </div>
+            <div>
+                <span id="save_info"></span>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" onclick="saveform(this)" id="saveform" type="submit">登&nbsp;&nbsp; 录</button>
+        </form>
+    </div> <!-- /container -->
+{% endblock %}
+{% block scripts %}
+    <script src="../../static/bootstrap-4.1.1-dist/assets/js/src/ie-emulation-modes-warning.js"></script>
+    <script src="../../static/js/dologin.js"></script>
+{% endblock %}

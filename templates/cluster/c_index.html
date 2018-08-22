@@ -1,0 +1,45 @@
+{% extends "common/index.html" %}
+<div class="container-fluid">
+{% block content %}
+        <div class="clearfix ">
+            <h5 class="m-2"> 集群管理信息</h5>
+            <table id="jobs" class="display" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th width="35">序号</th>
+                    <th>集群名称</th>
+                    <th>集群路径</th>
+                    <th>集群IP</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+{% endblock %}
+</div>
+{% block scripts %}
+    <script src="../../static/js/jquery.confirm.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var table = $('#jobs').DataTable({
+                "ajax": "/cluster/c_sql_data",
+                "columns": [
+                    {data:null },
+                    {data: "cls_name"},
+                    {data: "cls_path"},
+                    {data: "cls_ip"}
+                ],
+                "lengthMenu": [[50, 100, -1], [50, 100, "All"]]
+            });
+             table.on('order.dt search.dt',
+            function(){
+                table.column(0,{
+                     search: 'applied',
+                     order: 'applied'
+            }).nodes().each(function(cell,i){
+                cell.innerHTML = i + 1;
+            });
+            }).draw();
+            $('#jobs').removeClass('display').addClass('table table-striped table-bordered table-hover');
+        })
+    </script>
+{% endblock %}

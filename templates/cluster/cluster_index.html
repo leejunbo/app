@@ -1,0 +1,86 @@
+{% extends "common/index.html" %}
+{% block content %}
+        <h5 class="m-2">集群信息添加</h5>
+    <div class="row col-lg-12 col-sm-12" style="padding-left: 40px">
+        <div class="col-lg-5"></div>
+        <div id="c_add_button" class="col-sm-12 col-lg-2">
+            <button id="c_add_Info" class="btn btn-primary btn-block btn-lg" style="font-size:0.8rem;"> 添&nbsp;&nbsp;加
+            </button>
+        </div>
+    </div>
+    <hr/>
+    <div class="container-fluid">
+        <div class="clearfix ">
+            <h5 class="m-2"> 集群管理信息</h5>
+            <table id="jobs" class="display" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th width="35">序号</th>
+                    <th>集群名称</th>
+                    <th>集群路径</th>
+                    <th>集群IP</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script src="../../static/js/jquery.confirm.js"></script>
+    <script>
+    var cluster_col=[
+    {data: null},
+    {data: "cls_name"},
+    {data: "cls_path"},
+    {data: "cls_ip"},
+    {data: null}
+];
+
+$(document).ready(function () {
+    var table = $('#jobs').DataTable({
+        "ajax": "/cluster/c_sql_data",
+        "columns": cluster_col,
+
+        "columnDefs": [{
+            "targets": -1,
+            "data": null,
+            "defaultContent": "<button id=\"c_editInfo\" class=\"btn-edit btn-primary-edit btn-sm-handle \">修改</button >" +
+            "<button id=\"c_deleteInfo\" class=\"btn-del btn-primary-del btn-sm-handle\">删除</button>"
+        },
+            {
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            }
+        ],
+        "lengthMenu": [[50, 100, -1], [50, 100, "All"]]
+    });
+    table.on('order.dt search.dt',
+        function () {
+            table.column(0, {
+                search: 'applied',
+                order: 'applied'
+            }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1;
+            });
+        }).draw();
+    $('#jobs tbody').on('click', '#c_editInfo', function () {
+        console.log("sdfasdfsdf");
+        var data = table.row($(this).parents().parents('tr')).data();
+        $('#id').val(data.id);
+        $('#domain').val(data.domain);
+        $('#ip').val(data.ip);
+        $('#update').modal('show');
+    });
+    $('#jobs tbody').on('click', '#c_deleteInfo', function () {
+        var data = table.row($(this).parents().parents('tr')).data();
+        $('#del_id').val(data.id);
+        $('#delete').modal('show');
+    });
+    $('#jobs').removeClass('display').addClass('table table-striped table-bordered table-hover');
+});
+
+
+    </script>
+{% endblock %}

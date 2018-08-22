@@ -1,0 +1,62 @@
+{% extends "domain/base.html" %}
+{% block title %}
+    管理员账号注册
+{% endblock %}
+{% block body %}
+    {% include "navbar2.html" %}
+    <header class="header">
+        <section class="topWrap clearfix">
+            <section class="mainWrap">
+                <span class="logo">
+                <a href="http://www.pku.edu.cn/" title="北京大学"><img
+                        src="/static/img/pkulogo_red.png"></a>
+                <a class="xkb_logo" href=""
+                   title=""></a>
+                </span>
+            </section>
+        </section>
+    </header>
+    <br>
+    <div class="container">
+        <form class="form-register" method="post"
+              action="{{ url_for('register') }}" id="nqs-add-userxinxi-form">
+            {% for message in get_flashed_messages() %}
+                <div class="alert alert-warning">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ message }}
+                </div>
+            {% endfor %}
+            <h2 class="form-register-heading" style="color: #8f363c;font-size: 20px">管理员注册</h2>
+            <label for="account" class="sr-only"></label>
+            <input class="form-control" id="username" name="username" placeholder="账号" required autofocus>
+            <label for="password" class="sr-only"></label>
+            <input type="password" class="form-control" id="password" name="psw" placeholder="密码" required>
+            <label for="password" class="sr-only"></label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="再次输入密码" required>
+            <div class="checkbox">
+                <label><input type="checkbox" id="clause">我已阅读并接受</label> <a href="{{ url_for("register_clause") }}"
+                                                                               style="text-decoration: underline;"
+                                                                               target="_blank">注册条款</a>
+                <a class="i-clear i-clear-pad" onclick="resetInput(event)" href="javascript:void(0)"><i class=""></i></a>
+            </div>
+            <div class="row-thin">
+		            <span id="msg"></span>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" onclick="register_login()" type="submit">确&nbsp;&nbsp;认
+            </button>
+            <button class="btn btn-lg btn-primary-back btn-block" onclick="go_back()">返回登陆
+            </button>
+        </form>
+    </div><!-- /container -->
+{% endblock %}
+{% block styles %}
+    <link href="../static/css/register.css" rel="stylesheet">
+    <link href="../static/BootstrapValidator/dist/css/bootstrapValidator.min.css" rel="stylesheet">
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+        function go_back() {
+            window.location.href = '{{url_for('index')}}';
+        }
+    </script>
+{% endblock %}

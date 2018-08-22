@@ -1,0 +1,39 @@
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+    <div class="modal-dialog modal-sm" role="document" style="max-width: 350px">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #8f000b;">
+                <h6 class="modal-title" id="editModalLabel" style="color: #ffffff;">添加信息</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span
+                        aria-hidden="true" >&times;</span>
+                </button>
+
+            </div>
+            <div class="modal-body">
+                <form>
+                <div class="col-12">
+                    <label for="Host" class="control-label">域名：</label>
+                    <input type="text" class="form-control  text-input" id="domain_0" style="width: 100%" autofocus>
+                </div>
+                <div class="col-12">
+                    <label for="IP" class="control-label">IP:</label>
+                    <input type="text" class="form-control text-input" name="ip" id="ip_0" style="width: 100%">
+                </div>
+                <div class="row col-12">
+                <div class="col-6">
+                    <label for="port" class="control-label">端口:</label>
+                    <input type="text" class="form-control text-input" id="port_0" value="80" style="width: 100%">
+                </div>
+                <div class="col-6">
+                    <label for="ClsId" class="control-label">所属集群ID:</label>
+                    <input type="text" class="form-control text-input" name="ip" id="clsId_0" style="width: 100%">
+                </div>
+                </div>
+               </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm" data-dismiss="modal">关闭</button>
+                <button id="add_info" type="button" class="btn btn-primary btn-sm" onclick="addInfo()">确认</button>
+            </div>
+        </div>
+    </div>
+</div>

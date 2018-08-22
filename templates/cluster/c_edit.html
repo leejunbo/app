@@ -1,0 +1,32 @@
+<div class="modal fade" id="c_edit" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+    <div class="modal-dialog modal-sm" role="document" style="max-width: 350px;padding-top:100px">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #8f000b;">
+                <h6 class="modal-title" id="editModalLabel" style="color: #ffffff;">集群信息修改</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="e_cls_id">
+                <div class="col-12">
+                    <label for="clsName" class="control-label">集群名称：</label>
+                    <input type="text" class="form-control" id="e_cls_name" style="width: 100%" required>
+                </div>
+                <div class="col-12">
+                    <label for="clsPath" class="control-label">集群路径:</label>
+                    <input type="text" class="form-control" id="e_cls_path" style="width: 100%" required>
+                </div>
+                <div class="col-12">
+                    <label for="clsIp" class="control-label">集群IP:</label>
+                    <input type="text" class="form-control" id="e_cls_ip" style="width: 100%" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="c_edit()">确认</button>
+            </div>
+        </div>
+    </div>
+</div>

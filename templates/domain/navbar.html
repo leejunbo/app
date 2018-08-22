@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+    <a class="navbar-brand" href="#" style="">网站证书管理系统</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class=" collapse navbar-collapse justify-content-end" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+            {% if not session.logged_in %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('login') }}">你好，请登录</a>
+                </li>
+                <li class="nav-item">
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">安全退出</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

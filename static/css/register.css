@@ -1,0 +1,83 @@
+body {
+  background-color: #eee;
+}
+.form-register {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-register .form-register-heading,
+.form-register{
+  margin-bottom: 10px;
+  font-weight: normal;
+}
+.checkbox {
+  margin-top: 10px;
+  margin-bottom: 0px;
+  font-weight: normal;
+}
+.form-register .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-register .form-control:focus {
+  z-index: 2;
+}
+.form-register input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: .25rem;
+  border-bottom-left-radius: .25rem;
+}
+.form-register input[type="password"] {
+  margin-bottom: -1px;
+  border-top-left-radius: .25rem;
+  border-top-right-radius: .25rem;
+}
+label {
+    color:#000;
+    cursor:pointer;
+}
+label:hover {
+	color:#A90000;
+}
+
+.btn-primary1 {
+  color: #fff;
+  background-color: #9a9dad;
+  border-color: #9a9dad;
+}
+
+.btn-primary1:hover {
+  color: #fff;
+  background-color: #9a9dad;
+  border-color: #9a9dad;
+}
+
+.btn-primary1:focus, .btn-primary1.focus {
+  box-shadow: 0 0 0 0.2rem rgba(143, 0, 11, 0.5);
+}
+
+.btn-primary1.disabled, .btn-primary1:disabled {
+  color: #fff;
+  background-color: #8f000b;
+  border-color: #8f000b;
+}
+
+.btn-primary1:not(:disabled):not(.disabled):active, .btn-primary1:not(:disabled):not(.disabled).active,
+.show > .btn-primary1.dropdown-toggle {
+  color: #fff;
+  background-color: #8f000b;
+  border-color: #8f000b;
+}
+.btn-primary1:not(:disabled):not(.disabled):active:focus, .btn-primary1:not(:disabled):not(.disabled).active:focus,
+.show > .btn-primary1.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(143, 0, 11, 0.5);
+}
+#reg{
+  margin-right: 100px;
+}
