@@ -1,5 +1,5 @@
 def add_domain_file(cls_path,cls_name,cls_ip,domain, ip, port=""):
-	path = cls_path+"/"+cls_name+"/"cls_ip
+	path = cls_path+"/"+cls_name+"/"+cls_ip
     f = open(path+"/" + domain +".conf", "w+", encoding='utf8')
     f.write(
         "\tserver{ \n"
