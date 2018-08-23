@@ -127,5 +127,6 @@ def c_delete():
         db.rollback()
         flash(cls_name + '的信息删除失败', 'error')
         return jsonify("error")
+	subprocess.check_call(["rm", "-rf", cls_path+"/"+cls_name])
     flash(cls_name + '的信息删除成功', 'success')
     return jsonify("success")
