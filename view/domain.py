@@ -29,7 +29,7 @@ def config_file_info():
     db = get_db()
     try:
         cursor = db.cursor()
-        cursor.execute("select cls_name,cls_path,cls_ip from clustermanage where id="+cls_id)
+        cursor.execute("select cls_name,cls_path,cls_ip from clustermanage where cls_id="+cls_id)
         cur = cursor.fetchone()
         cls_name = cur[0]
         cls_path = cur[1]
@@ -57,7 +57,7 @@ def config_newfile():
     db = get_db()
     try:
         cursor = db.cursor()
-        cursor.execute("select cls_name,cls_path,cls_ip from clustermanage where id="+cls_id)
+        cursor.execute("select cls_name,cls_path,cls_ip from clustermanage where cls_id="+cls_id)
         cur = cursor.fetchone()
         cls_name = cur[0]
         cls_path = cur[1]
@@ -186,7 +186,7 @@ def save():
         db.rollback()
         flash(domain_old+' 信息修改失败','error')
     view.del_line.del_line(ip_old)  # 删除旧的ip
-    cursor.execute("select cls_name,cls_path,cls_ip from clustermanage where id="+cls_id)
+    cursor.execute("select cls_name,cls_path,cls_ip from clustermanage where cls_id="+cls_id)
     cur = cursor.fetchone()
     cls_name = cur[0]
     cls_path = cur[1]
@@ -276,7 +276,7 @@ def delete():
     db = get_db()
     try:
         cursor = db.cursor()
-        d_sql = "SELECT domain,ip FROM domainmanage WHERE id=" + del_id
+        d_sql = "SELECT domain,ip FROM domainmanage WHERE cls_id=" + del_id
         cursor.execute(d_sql)
         cur1 = cursor.fetchone()
         domain = cur1[0]
