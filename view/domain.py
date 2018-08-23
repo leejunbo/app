@@ -257,7 +257,7 @@ def add():
         db.commit()
     except ImportError:
         db.rollback()
-        flash(r[0]+' 添加失败','error'
+        flash(r[0]+' 添加失败','error')
         return jsonify("error")
     flash(r[0]+' 添加成功','success')
     subprocess.check_call(["ssh",cls_ip,"/usr/local/nginx/sbin/nginx", "-s","reload"])
