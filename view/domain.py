@@ -236,6 +236,7 @@ def add():
         return jsonify(data)
     db = get_db()
     cursor = db.cursor()
+    cursor.execute("select domain from domainmanage")
     cur = cursor.fetchall()
     for i in range(len(cur)):
         if cur[i][0] == r[0]:
