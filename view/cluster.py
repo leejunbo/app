@@ -21,15 +21,15 @@ def c_add():
     cls_name = data['clsName']
     cls_path = data['clsPath']
     cls_ip = data['clsIp']
-	path = cls_path+"/"+cls_name+"/"+cls_ip
-	subprocess.check_call(["mv", "/etc/hosts", "/etc/hosts.back"])
-	subprocess.check_call(["ssh",cls_ip,"mv", "/etc/hosts", "/etc/hosts.back"])
-	subprocess.check_call(["touch",cls_path+"/"+cls_name+"/hosts"])
-	subprocess.check_call(["cat","/etc/hosts.back",">","/etc/hosts"])
-	subprocess.check_call(["ssh",cls_ip,"cat","/etc/hosts.back",">","/etc/hosts"])
-	subprocess.check_call(["ln","-s",cls_path+"/"+cls_name+"/hosts","/etc/hosts"])
-	subprocess.check_call(["ssh",cls_ip,"ln","-s",cls_path+"/"+cls_name+"/hosts","/etc/hosts"])
-	subprocess.check_call(["ssh",cls_ip,"ln","-s",path+"/*.conf", "/usr/local/nginx/conf/conf.d"])
+    path = cls_path+"/"+cls_name+"/"+cls_ip
+    subprocess.check_call(["mv", "/etc/hosts", "/etc/hosts.back"])
+    subprocess.check_call(["ssh",cls_ip,"mv", "/etc/hosts", "/etc/hosts.back"])
+    subprocess.check_call(["touch",cls_path+"/"+cls_name+"/hosts"])
+    subprocess.check_call(["cat","/etc/hosts.back",">","/etc/hosts"])
+    subprocess.check_call(["ssh",cls_ip,"cat","/etc/hosts.back",">","/etc/hosts"])
+    subprocess.check_call(["ln","-s",cls_path+"/"+cls_name+"/hosts","/etc/hosts"])
+    subprocess.check_call(["ssh",cls_ip,"ln","-s",cls_path+"/"+cls_name+"/hosts","/etc/hosts"])
+    subprocess.check_call(["ssh",cls_ip,"ln","-s",path+"/*.conf", "/usr/local/nginx/conf/conf.d"])
     r = [cls_name, cls_path, cls_ip]
     pattern = re.compile(
         '(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.'
