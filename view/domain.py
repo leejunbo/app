@@ -23,11 +23,24 @@ def d_sql_data():
 	
 def config_file_info():
     data = request.get_data()
-    print(data)
     data = strtojson(data)
     f_domain = data['domain']
-    with open('/etc/nginx/conf.d/'+f_domain+'.conf', 'r') as f:
-        f = f.read()
+    cls_id = data['cls_id']
+    db = get_db()
+    try:
+        cursor = db.cursor()
+        cursor.execute("select cls_name,cls_path,cls_ip from clustermanage where id="+cls_id)
+        cur = cursor.fetchone()
+        cls_name = cur[0]
+        cls_path = cur[1]
+        cls_ip = cur[2]
+        with open(cls_path+'/'+cls_name+'/'+cls_ip+'/'+f_domain+'.conf', 'r') as f:
+            f = f.read()
+        db.commit()
+    except ImportError:
+        db.rollback()
+        flash('读取配置文件信息失败','error')
+        return jsonify('error')
     return jsonify(f)
 
 
@@ -39,11 +52,25 @@ def config_newfile():
     data = request.get_data()
     data = strtojson(data)
     nf_domain = data['domain']
-    nfInfo = data['nfInfo']
-    with open('/etc/nginx/conf.d/'+nf_domain+'.conf','w+') as f:
-        f = f.write(nfInfo)
+    confFile = data['confFile']
+    cls_id = data['cls_id']
+    db = get_db()
+    try:
+        cursor = db.cursor()
+        cursor.execute("select cls_name,cls_path,cls_ip from clustermanage where id="+cls_id)
+        cur = cursor.fetchone()
+        cls_name = cur[0]
+        cls_path = cur[1]
+        cls_ip = cur[2]
+        with open(cls_path+'/'+cls_name+'/'+cls_ip+'/'+nf_domain+'.conf','w+') as f:
+            f = f.write(confFile)
+        db.commit()
+    except ImportError:
+        db.rollback()
+        flash('域名为 '+nf_domain+' 的配置文件信息修改失败','error')
+        return jsonify("error")
     flash('域名为 '+nf_domain+' 的配置文件信息修改成功','success')
-    subprocess.check_call(["nginx", "-s","reload"])
+    subprocess.check_call(["ssh",cls_ip,"/usr/local/nginx/sbin/nginx", "-s","reload"])
     return jsonify(f)
 	
 
@@ -113,7 +140,8 @@ def save():
         return jsonify("error")
     data = request.get_data()
     data = strtojson(data)
-    id = data["id"]
+    d_id = data["d_id"]
+    cls_id = data["cls_id"]
     domain = data["domain"]
     ip = data["ip"]
     port = data["port"]
@@ -128,7 +156,7 @@ def save():
     if p is None:
         flash('IP格式不匹配', 'alert')
         return redirect(url_for('edit'))
-    sql = "SELECT domain,ip,port FROM domainmanage WHERE id=" + id
+    sql = "SELECT domain,ip,port FROM domainmanage WHERE id=" + d_id
     cursor.execute(sql)
     cur = cursor.fetchone()
     domain_old = cur[0]
@@ -138,11 +166,11 @@ def save():
     cursor.execute(sql_search)
     cur_search = cursor.fetchall()
     for i in range(len(cur_search)):
-        j = (cur_search[i][0] == domain) and (cur_search[i][1] == ip) and (cur_search[i][2] == port) and (str(cur_search[i][3]) == id)
-        k = (cur_search[i][0] == domain) and (str(cur_search[i][3]) != id)
+        j = (cur_search[i][0] == domain) and (cur_search[i][1] == ip) and (cur_search[i][2] == port) and (str(cur_search[i][3]) == d_id)
+        k = (cur_search[i][0] == domain) and (str(cur_search[i][3]) != d_id)
         print(cur_search[i][0] == domain)
-        print(cur_search[i][3] != str(id))
-        print(isinstance(id,str))
+        print(cur_search[i][3] != str(d_id))
+        print(isinstance(d_id,str))
         print(isinstance(str(cur_search[i][3]),str))
         if j:
             flash(domain+' 信息未作改动', 'alert')
@@ -151,33 +179,39 @@ def save():
             flash(domain_old + "不能修改为 " + domain + ','+domain+' 域名已存在', 'alert')
             return jsonify('ok') 
     try:
-        sql = "UPDATE domainmanage SET domain='" + domain + "',ip='" + ip + "',port='"+ port +"' WHERE id=" + id
+        sql = "UPDATE domainmanage SET domain='" + domain + "',ip='" + ip + "',port='"+ port +"' WHERE id=" + d_id
         cursor.execute(sql)
         db.commit()
     except ImportError:
         db.rollback()
+        flash(domain_old+' 信息修改失败','error')
     view.del_line.del_line(ip_old)  # 删除旧的ip
-     
+    cursor.execute("select cls_name,cls_path,cls_ip from clustermanage where id="+cls_id)
+    cur = cursor.fetchone()
+    cls_name = cur[0]
+    cls_path = cur[1]
+    cls_ip = cur[2]
+    path = cls_path+'/'+cls_name+'/'+cls_ip
     if  port=="80":
-        with open('/etc/nginx/conf.d/'+domain_old+'.conf', 'r') as f:
+        with open(path+'/'+domain_old+'.conf', 'r') as f:
             f = f.read()
             f = f.replace(domain_old,domain)
             f = f.replace(port_old,port)
             f.replace(ip_old,ip)
-        with open('/etc/nginx/conf.d/'+domain+'.conf','w+') as file:
+        with open(path+'/'+domain+'.conf','w+') as file:
             file = file.write(f)
     else:
-        with open('/etc/nginx/conf.d/'+domain_old+'.conf', 'r') as f:
+        with open(path+'/'+domain_old+'.conf', 'r') as f:
             f = f.read()
             f = f.replace(domain_old,domain)
             f = f.replace(ip_old,ip)
             f = f.replace(port_old,port)
             if port_old=="80":
                f = f.replace(port,"80",1)
-            with open('/etc/nginx/conf.d/'+domain+'.conf','w+') as file:
+            with open(path+'/'+domain+'.conf','w+') as file:
                file.write(f)
     flash('域名为 '+ domain +' 的信息修改成功', 'success')
-    subprocess.check_call(["nginx", "-s","reload"])
+    subprocess.check_call(["ssh",cls_ip,"/usr/local/nginx/sbin/nginx", "-s","reload"])
     return jsonify("ok")
 
 
@@ -202,7 +236,6 @@ def add():
         return jsonify(data)
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT domain FROM domainmanage")
     cur = cursor.fetchall()
     for i in range(len(cur)):
         if cur[i][0] == r[0]:
