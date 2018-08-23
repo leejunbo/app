@@ -115,7 +115,7 @@ def c_delete():
         print(files)
         for file in files:
             if os.path.splitext(file)[1] == '.conf':
-            flash("路径"+path+"的目录下存在.conf配置文件", "alert")
+                flash("路径"+path+"的目录下存在.conf配置文件", "alert")
             return jsonify("alert")
     db = get_db()
     try:
