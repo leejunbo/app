@@ -17,7 +17,7 @@ def add_domain_file(cls_path,cls_name,cls_ip,domain, ip, port=""):
         "\t\t}\n"
         "\t}\n")
     f.close()
-    h = open(path+"/hosts", "a+", encoding='utf8')
+    h = open(cls_path+"/"+cls_name+"/"+"/hosts", "a+", encoding='utf8')
     h.write(ip + "   " + domain + "\n")
     h.close()
 
