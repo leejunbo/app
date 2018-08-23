@@ -21,6 +21,15 @@ def c_add():
     cls_name = data['clsName']
     cls_path = data['clsPath']
     cls_ip = data['clsIp']
+	path = cls_path+"/"+cls_name+"/"+cls_ip
+	subprocess.check_call(["mv", "/etc/hosts", "/etc/hosts.back"])
+	subprocess.check_call(["ssh",cls_ip,"mv", "/etc/hosts", "/etc/hosts.back"])
+	subprocess.check_call(["touch",cls_path+"/"+cls_name+"/hosts"])
+	subprocess.check_call(["cat","/etc/hosts.back",">","/etc/hosts"])
+	subprocess.check_call(["ssh",cls_ip,"cat","/etc/hosts.back",">","/etc/hosts"])
+	subprocess.check_call(["ln","-s",cls_path+"/"+cls_name+"/hosts","/etc/hosts"])
+	subprocess.check_call(["ssh",cls_ip,"ln","-s",cls_path+"/"+cls_name+"/hosts","/etc/hosts"])
+	subprocess.check_call(["ssh",cls_ip,"ln","-s",path+"/*.conf", "/usr/local/nginx/conf/conf.d"])
     r = [cls_name, cls_path, cls_ip]
     pattern = re.compile(
         '(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.'
@@ -37,7 +46,7 @@ def c_add():
         for i in range(len(cur)):
             if cur[i][0] == r[0]:
                 flash(cls_name + '已存在', 'alert')
-                return jsonify(data)
+                return jsonify("error")
         cursor.execute("INSERT INTO clustermanage (cls_name,cls_path,cls_ip) VALUES (%s,%s,%s)", (r[0], r[1], r[2]))
         db.commit()
     except ImportError:
@@ -57,7 +66,6 @@ def c_edit():
     cls_name = data["clsName"]
     cls_path = data["clsPath"]
     cls_ip = data["clsIp"]
-    print(cls_name)
     r = [cls_name, cls_path, cls_ip]
     pattern = re.compile(
         '(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.'
@@ -98,16 +106,17 @@ def c_delete():
     cls_id = data["clsId"]
     cls_name = data["clsName"]
     cls_path = data["clsPath"]
-    for root, dirs, files in os.walk(cls_path):
-        print(os.walk(cls_path))
+	cls_ip = data["clsIp"]
+	path=cls_path+"/"+cls_name+"/"+cls_ip
+    for root, dirs, files in os.walk(path):
+        print(os.walk(path))
         print(root)
         print(dirs)
         print(files)
         for file in files:
             if os.path.splitext(file)[1] == '.conf':
-                    pass
-        flash("路径"+cls_path+"的目录下存在.conf配置文件", "alert")
-        return jsonify("alert")
+				flash("路径"+path+"的目录下存在.conf配置文件", "alert")
+			return jsonify("alert")
     db = get_db()
     try:
         cursor = db.cursor()
@@ -116,5 +125,7 @@ def c_delete():
         db.commit()
     except ImportError:
         db.rollback()
+		flash(cls_name + '的信息删除失败', 'error')
+		return jsonify("error")
     flash(cls_name + '的信息删除成功', 'success')
     return jsonify("success")
