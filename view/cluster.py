@@ -115,8 +115,8 @@ def c_delete():
         print(files)
         for file in files:
             if os.path.splitext(file)[1] == '.conf':
-				flash("路径"+path+"的目录下存在.conf配置文件", "alert")
-			return jsonify("alert")
+                flash("路径"+path+"的目录下存在.conf配置文件", "alert")
+            return jsonify("alert")
     db = get_db()
     try:
         cursor = db.cursor()
@@ -125,7 +125,7 @@ def c_delete():
         db.commit()
     except ImportError:
         db.rollback()
-		flash(cls_name + '的信息删除失败', 'error')
-		return jsonify("error")
+        flash(cls_name + '的信息删除失败', 'error')
+        return jsonify("error")
     flash(cls_name + '的信息删除成功', 'success')
     return jsonify("success")
