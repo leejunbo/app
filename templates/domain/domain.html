@@ -72,10 +72,11 @@
     <script>
         function update() {
             var data = {};
-            data['id'] = $('#id').val();
+            data['d_id'] = $('#id').val();
             data['domain'] = $('#domain').val();
             data['ip'] = $('#ip').val();
             data['port'] = $('#port').val();
+			data['cls_id'] = $('#cls_id').val();
             var reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
             if(data.domain!=""&&data.ip!=""&&data.port!=""&&reg.test(data.ip)){
             $.ajax({
@@ -109,7 +110,7 @@
         function confInfo(obj){
             var data = {};
             data['domain'] = $('#domain').val();
-            data['nfInfo'] = $('#confFile').val();
+            data['confFile'] = $('#confFile').val();#从前端读取配置文件详情信息，存到data中
             data['cls_id'] = $('#cls_id').val();
             $.ajax({
             type: 'post',
@@ -134,7 +135,7 @@
         ]
         $(document).ready(function () {
             var table = $('#jobs').DataTable({
-                "ajax": "/domain/d_sql_data",
+                "ajax": "/domain/d_sql_data", #以ajax的形式通过该路径获取数据库数据
                 "columns": job_col,
                 "scrollX": true,
                 "lengthMenu": [[50, 100, -1], [50, 100, "All"]],
@@ -168,7 +169,7 @@
             }).draw();
             $('#jobs tbody').on('click', '#editInfo', function () {
                 var data = table.row($(this).parents().parents('tr')).data();
-                $('#id').val(data.id);
+                $('#id').val(data.id);#从数据库获取数据，赋值给id=id 的前端页面显示
                 $('#domain').val(data.domain);
                 $('#ip').val(data.ip);
                 $('#port').val(data.port);
@@ -198,8 +199,8 @@
             dataType: 'json',
             success: function(f){
                 console.log("有木有success！！！")
-                $('#confFile').val(f);
-                $('#editConfInfo').modal('show')
+                $('#confFile').val(f);#接收后台传过来的字符串并赋值给前端页面id=confFile
+                $('#editConfInfo').modal('show'); #模态框显示文件信息
             }
             })
             })
