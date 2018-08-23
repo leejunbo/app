@@ -282,7 +282,7 @@ def delete():
         domain = cur1[0]
         ip = cur1[1]
         ipdomain = ip + "   " + domain
-        c_sql = "select cls_name,cls_path,cls_ip from clustermanage where id=" + cls_id
+        c_sql = "select cls_name,cls_path,cls_ip from clustermanage where cls_id=" + cls_id
         cursor.execute(c_sql)
         cur2 = cursor.fetchone()
         cls_name = cur2[0]
