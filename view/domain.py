@@ -235,25 +235,31 @@ def add():
         flash('IP格式不匹配', 'alert')
         return jsonify(data)
     db = get_db()
-    cursor = db.cursor()
-    cursor.execute("select domain from domainmanage")
-    cur = cursor.fetchall()
-    for i in range(len(cur)):
-        if cur[i][0] == r[0]:
-            flash(r[0]+' 域名已存在', 'alert')
-            return jsonify(data)
-    cursor.execute("select cls_ip,cls_path from clustermanage where cls_id="+r[3])
-    cur = cursor.fetchone()
-    cls_ip=cur[0]
-    cls_path=cur[1]
-    if r[2]=="":
-        view.add_file.add_domain_file(cls_path, r[0], r[1], ":80")
-    else:
-        p=":"+r[2]
-        view.add_file.add_domain_file(cls_path, r[0], r[1], p)
-    cursor.execute("INSERT INTO domainmanage (domain,ip,port,cls_id) VALUES (%s,%s,%s,%s)", (r[0], r[1], r[2],r[3]))
-    db.commit()
-    flash(r[0]+' 添加成功', 'success')
+    try:
+        cursor = db.cursor()
+        cursor.execute("select domain from domainmanage")
+        cur = cursor.fetchall()
+        for i in range(len(cur)):
+            if cur[i][0] == r[0]:
+                flash(r[0]+' 域名已存在', 'alert')
+                return jsonify(data)
+        cursor.execute("select cls_ip,cls_path,cls_name from clustermanage where cls_id="+r[3])
+        cur = cursor.fetchone()
+        cls_ip=cur[0]
+        cls_path=cur[1]
+        cls_name=cur[2]
+        cursor.execute("INSERT INTO domainmanage (domain,ip,port,cls_id) VALUES (%s,%s,%s,%s)", (r[0], r[1], r[2],r[3]))
+        if r[2]=="":
+            view.add_file.add_domain_file(cls_path,cls_name,cls_ip, r[0], r[1], ":80")
+        else:
+            p=":"+r[2]
+            view.add_file.add_domain_file(cls_path,cls_name,cls_ip, r[0], r[1], p)
+        db.commit()
+    except ImportError:
+        db.rollback()
+        flash(r[0]+' 添加失败','error'
+        return jsonify("error")
+    flash(r[0]+' 添加成功','success')
     subprocess.check_call(["ssh",cls_ip,"/usr/local/nginx/sbin/nginx", "-s","reload"])
     return jsonify("ok")
 
@@ -266,26 +272,33 @@ def delete():
     data = request.get_data()
     data = strtojson(data)
     del_id = data['del_id']
+    cls_id = data['cls_id']
     db = get_db()
-    cursor = db.cursor()
-    sql = "SELECT domain,ip FROM domainmanage WHERE id=" + del_id
     try:
-        cursor.execute(sql)
-        cur = cursor.fetchone()
-        print("+++++++++++++++++++++++++++++++++++++++")
-        print(cur)
-        domain = cur[0]
-        ip = cur[1]
+        cursor = db.cursor()
+        d_sql = "SELECT domain,ip FROM domainmanage WHERE id=" + del_id
+        cursor.execute(d_sql)
+        cur1 = cursor.fetchone()
+        domain = cur1[0]
+        ip = cur1[1]
         ipdomain = ip + "   " + domain
+        c_sql = "select cls_name,cls_path,cls_ip from clustermanage where id=" + cls_id
+        cursor.execute(c_sql)
+        cur2 = cursor.fetchone()
+        cls_name = cur2[0]
+        cls_path = cur2[1]
+        cls_ip = cur2[2]
+        path = cls_path+"/"+cls_name+"/"+cls_ip
         sql = "DELETE FROM domainmanage WHERE id=" + del_id
         cursor.execute(sql)
         db.commit()
     except ImportError:
         db.rollback()
-    del_file(domain)
+        flash(domain+' 删除失败','error')
+    del_file(path,domain)
     view.del_line.del_line(ipdomain)
     flash(domain+' 删除成功', 'success')
-    subprocess.check_call(["nginx", "-s","reload"])
+    subprocess.check_call(["ssh",cls_ip,"/usr/local/nginx/sbin/nginx", "-s","reload"])
     return jsonify("ok")
 
 
@@ -294,8 +307,8 @@ def strtojson(jsonstr):
     return jsondict
 
 
-def del_file(cur):
-    file = "/etc/nginx/conf.d/" + cur + ".conf"
+def del_file(path,cur):
+    file = path+"/" + cur + ".conf"
     os.remove(file)
 
 

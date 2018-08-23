@@ -1,10 +1,11 @@
-def add_domain_file(cls_path,domain, ip, port=""):
-    f = open(cls_path+"/" + domain +".conf", "w+", encoding='utf8')
+def add_domain_file(cls_path,cls_name,cls_ip,domain, ip, port=""):
+	path = cls_path+"/"+cls_name+"/"cls_ip
+    f = open(path+"/" + domain +".conf", "w+", encoding='utf8')
     f.write(
         "\tserver{ \n"
         "\t\tlisten    80;\n"
         "\t\tserver_name  " + domain + ";\n"
-        
+		
         "\t\tlocation / {\n"
         "\t\tproxy_pass http://" + ip + port+";\n"
         "\t\tproxy_redirect off;\n"
@@ -16,7 +17,7 @@ def add_domain_file(cls_path,domain, ip, port=""):
         "\t\t}\n"
         "\t}\n")
     f.close()
-    h = open(cls_path+"/hosts", "a+", encoding='utf8')
+    h = open(path+"/hosts", "a+", encoding='utf8')
     h.write(ip + "   " + domain + "\n")
     h.close()
 
