@@ -25,9 +25,9 @@ def c_add():
 	subprocess.check_call(["mkdir","-p",path])
     subprocess.check_call(["ssh",cls_ip,"mv", "/etc/hosts", "/etc/hosts.back"])
     subprocess.check_call(["touch",cls_path+"/"+cls_name+"/hosts"])
-    subprocess.check_call(["ssh",cls_ip,"cat","/etc/hosts.back",">","/etc/hosts"])
-    subprocess.check_call(["ln","-s",cls_path+"/"+cls_name+"/hosts","/etc/hosts"])
     subprocess.check_call(["ssh",cls_ip,"ln","-s",cls_path+"/"+cls_name+"/hosts","/etc/hosts"])
+    subprocess.check_call(["ssh",cls_ip,"cat","/etc/hosts.back",">","/etc/hosts"])
+	subprocess.check_call(["ssh",cls_ip,"rm","-f","/etc/hosts.back"])
     subprocess.check_call(["ssh",cls_ip,"ln","-s",path+"/*.conf", "/usr/local/nginx/conf/conf.d"])
     r = [cls_name, cls_path, cls_ip]
     pattern = re.compile(
